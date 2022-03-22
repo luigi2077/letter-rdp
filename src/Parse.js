@@ -14,13 +14,35 @@ class Parser {
     }
 
     Program() {
-        return this.NumbericLiteral()
+        return {
+            type: 'Program',
+            body: this.Literal()
+        }
+    }
+
+    Literal() {
+        switch(this._lookahead.type) {
+            case 'NUMBER':
+                return this.NumbericLiteral()
+            case 'STRING':
+                return this.StringLiteral()
+        }
+        throw new SyntaxError(`Literal: unexpected literal production`)
+    }
+
+    StringLiteral() {
+        const token = this._eat('STRING')
+        return {
+            type: 'StringLiteral',
+            value: token.value.slice(1, -1)
+        }
+
     }
 
     NumbericLiteral() {
         const token = this._eat('NUMBER')
         return {
-            type: 'NumberricLiteral',
+            type: 'NumbericLiteral',
             value: Number(token.value)
         }
     }

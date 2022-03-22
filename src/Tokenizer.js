@@ -4,14 +4,20 @@ class Tokenizer {
         this._cursor = 0
     }
 
+    isEOF() {
+        return this._cursor === this._string.length
+    }
+
     hasMoreTokens() {
         return this._cursor < this._string.length
     }
+
     getNextToken() {
         if(!this.hasMoreTokens()) {
             return null
         }
         const string = this._string.slice(this._cursor)
+        // Number
         if(!Number.isNaN(Number(string[0]))) {
             let number = ''
             while(!Number.isNaN(Number(string[this._cursor]))) {
@@ -21,6 +27,21 @@ class Tokenizer {
                 type: 'NUMBER',
                 value: number
             }
+        }
+        // String
+        if(string[0] === '"') {
+            let s = ''
+            do {
+                s += string[this._cursor++]
+            } while(string[this._cursor] !== '"' && !this.isEOF())
+
+            s += this._cursor++ // skip first "
+            return {
+                type: 'STRING',
+                value: s,
+
+            }
+
         }
         return null
     }
