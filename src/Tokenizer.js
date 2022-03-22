@@ -28,7 +28,7 @@ class Tokenizer {
                 value: number
             }
         }
-        // String
+        // String double quote
         if(string[0] === '"') {
             let s = ''
             do {
@@ -41,7 +41,20 @@ class Tokenizer {
                 value: s,
 
             }
+        }
+        // String single quote
+        if(string[0] === `'`) {
+            let s = ''
+            do {
+                s += string[this._cursor++]
+            } while(string[this._cursor] !== `'` && !this.isEOF())
 
+            s += this._cursor++ // skip first "
+            return {
+                type: 'STRING',
+                value: s,
+
+            }
         }
         return null
     }
