@@ -1,3 +1,13 @@
+/*
+    tokenizer spec
+*/
+const Spec = [
+    [/^\d+/, 'NUMBER'],
+    [/^"[^"]*"/, 'STRING'],
+    [/^'[^']*'/, 'STRING'],
+]
+
+
 class Tokenizer {
     init(string) {
         this._string = string
@@ -17,35 +27,23 @@ class Tokenizer {
             return null
         }
         const string = this._string.slice(this._cursor)
-        // Number
-        let matched = /^\d+/.exec(string)
-        if(matched !== null) {
-            this._cursor += matched[0].length
+        for (const [regexp, tokenType] of Spec) {
+            const tokenValue = this._match(regexp, string)
+            if(tokenValue == null) continue
             return {
-                type: 'NUMBER',
-                value: matched[0]
+                type: tokenType,
+                value: tokenValue
             }
         }
-        // String double quote
-        matched = /^"[^"]*"/.exec(string)
-        if(matched != null) {
-            this._cursor += matched[0].length
-            return {
-                type: 'STRING',
-                value: matched[0],
-            }
-        }
-        // String single quote
-        matched = /^'[^']*'/.exec(string)
-        if(matched != null) {
-            this._cursor += matched[0].length
-            return {
-                type: 'STRING',
-                value: matched[0],
-            }
-        }
-        return null
     }
+
+    _match(regexp, string) {
+        const matched = regexp.exec(string)
+        if (matched == null) return null
+        this._cursor += matched[0].length
+        return matched[0]
+    }
+
 }
 
 module.exports = {
