@@ -2,6 +2,7 @@
     tokenizer spec
 */
 const Spec = [
+    [/^\s+/, null],
     [/^\d+/, 'NUMBER'],
     [/^"[^"]*"/, 'STRING'],
     [/^'[^']*'/, 'STRING'],
@@ -27,9 +28,11 @@ class Tokenizer {
             return null
         }
         const string = this._string.slice(this._cursor)
+
         for (const [regexp, tokenType] of Spec) {
             const tokenValue = this._match(regexp, string)
-            if(tokenValue == null) continue
+            if (tokenValue == null) continue
+            if (tokenType == null) return this.getNextToken()
             return {
                 type: tokenType,
                 value: tokenValue

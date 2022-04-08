@@ -3,7 +3,7 @@ const{ Parser } = require('../src/Parse')
 
 const parser = new Parser()
 
-const program = `43`
+const program = `  "hello" `
 
 const ast = parser.parse(program)
 
