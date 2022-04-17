@@ -4,7 +4,10 @@ const assert = require('assert')
 
 const parser = new Parser()
 
-const tests = [require('./literals-test')]
+const tests = [
+    require('./literals-test'),
+    require('./statement-list-test')
+]
 function exec() {
     const program = `  
     /* this is multiple lines
