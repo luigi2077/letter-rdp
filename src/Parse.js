@@ -12,22 +12,54 @@ class Parser {
         this._lookahead = this._tokenizer.getNextToken()
         return this.Program()
     }
-
+    /**
+     *   
+     * @returns { type: string, body: any }
+     */
     Program() {
         return {
             type: 'Program',
-            body: this.Literal()
+            body: this.StatementList()
         }
+    }
+    /**
+     *  StatementList statement -> Statement Statement Statement 
+     */
+    StatementList() {
+        const statementList = [this.Statement()]
+        while( this._lookahead != null) {
+            statementList.push(this.Statement())
+        }
+        return statementList
+    }
+
+    Statement() {
+        return this.ExpressionStatement()
+    }
+
+    ExpressionStatement() {
+        const expression  = this.Expression()
+        this._eat(';')
+        return {
+            type: 'ExpressionStatement',
+            expression,
+        }
+    }
+
+    Expression() {
+        return this.Literal()
+
     }
 
     Literal() {
         switch(this._lookahead.type) {
             case 'NUMBER':
-                return this.NumbericLiteral()
+                return this.NumericLiteral()
             case 'STRING':
                 return this.StringLiteral()
+            default:
+                throw new SyntaxError(`Literal: unexpected literal production`)
         }
-        throw new SyntaxError(`Literal: unexpected literal production`)
     }
 
     StringLiteral() {
@@ -39,10 +71,10 @@ class Parser {
 
     }
 
-    NumbericLiteral() {
+    NumericLiteral() {
         const token = this._eat('NUMBER')
         return {
-            type: 'NumbericLiteral',
+            type: 'NumericLiteral',
             value: Number(token.value)
         }
     }
